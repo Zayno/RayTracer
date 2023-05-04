@@ -1,11 +1,14 @@
 #include"Renderer.h"
 #include"bitmap_image.hpp"
 
+//set the following options to change output image
 
+//output image width and height
 int BM_Width = 600;
 int BM_Height = 600;
-unsigned int samplesPerPixel = 128;
-unsigned int maxRayDepth = 12;
+//ray tracer details settings
+unsigned int samplesPerPixel = 32;//64 is fairly nice
+unsigned int maxRayDepth = 12;//12 can be a default value
 
 
 bitmap_image MyImage(BM_Width, BM_Height);

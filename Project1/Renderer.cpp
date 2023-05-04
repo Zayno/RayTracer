@@ -69,7 +69,7 @@ void Renderer::Render()
 	}
 	MyImage.vertical_flip();
 	MyImage.horizontal_flip();
-	MyImage.save_image("AAAAAA.bmp");
+	MyImage.save_image("Output.bmp");
 
 	const auto stopTime = std::chrono::system_clock::now();
 	auto renderDuration = stopTime - startTime;
