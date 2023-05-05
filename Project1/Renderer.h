@@ -9,6 +9,9 @@
 
 enum class RenderState { Ready, Running, Finished, Stopped };
 enum class Scenes { DefaultScene, ThreeSpheres, TestScene };
+extern int BM_Width;
+extern int BM_Height;
+
 class Renderer
 {
 public:
@@ -18,11 +21,10 @@ public:
 	Renderer(const Renderer&) = delete;
 	~Renderer();
 
-	void SetImageSize(unsigned int x, unsigned int y);
 	void SetScene(Scenes scene = Scenes::DefaultScene) { m_sceneType = scene; };
 
 
-	void StartRender();
+	void StartRender(int Start, int End);
 
 	Scenes Scene() const { return m_sceneType; }
 
@@ -31,7 +33,8 @@ public:
 
 private:
 
-	glm::uvec2 m_imageSize{ 0, 0 };
+	int m_StartPos = 0;
+	int m_EndPos = 0;
 
 	Scenes m_sceneType{ Scenes::DefaultScene };
 	HittableObjectList m_scene;
@@ -59,6 +62,6 @@ private:
 
 	float AspectRatio() const
 	{
-		return static_cast<float>(m_imageSize.x) / static_cast<float>(m_imageSize.y);
+		return (float)(BM_Width) / (float)(BM_Height);
 	}
 };

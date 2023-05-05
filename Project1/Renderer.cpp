@@ -1,4 +1,6 @@
 #include<chrono>
+#include <mutex>
+
 #include "Renderer.h"
 
 #include "Shapes/Shapes.h"
@@ -20,46 +22,52 @@ extern color azure;
 
 extern unsigned int samplesPerPixel;
 extern unsigned int maxRayDepth;
+extern int BM_Width;
+extern int BM_Height;
 
+extern std::mutex mtx;
 
 Renderer::~Renderer()
 {
 
 }
 
-void Renderer::SetImageSize(unsigned int x, unsigned int y)
+void Renderer::StartRender(int Start, int End)
 {
-	m_imageSize = glm::uvec2{ x, y };
-
-}
-
-void Renderer::StartRender()
-{
+	m_StartPos = Start;
+	m_EndPos = End;
 
 	LoadScene();
 	Render();
 }
 
+std::mt19937 g_rnGenerator{};
+std::uniform_real_distribution<float> g_unifDistribution{ 0.0f, 1.0f };
+
+void HandlePixel(int _i, int _j)
+{
+
+}
 
 void Renderer::Render()
 {
-	std::cout << ("Start rendering!!!") << std::endl;
 	const auto startTime = std::chrono::system_clock::now();
 
 	std::mt19937 generator{ std::random_device{}() };
 
-	for (int i = 0; i < m_imageSize.x; i++)
+	for (int i = m_StartPos; i <= m_EndPos; i++)
 	{
-		std::cout << i << " / " << m_imageSize.x << std::endl;
+		//std::cout << i << " / " << BM_Width << std::endl;
 
-		for (int j = 0; j < m_imageSize.y; j++)
+		for (int j = 0; j < BM_Height; j++)
 		{
 			color pixel_color{ 0, 0, 0 };
 			glm::uvec2 pixelCoord = glm::uvec2{ i, j };
-			for (unsigned int i_sample = 0; i_sample < samplesPerPixel; i_sample++)
+
+			for (unsigned int i = 0; i < samplesPerPixel; i++)
 			{
-				float u = (static_cast<float>(pixelCoord.x) + m_unifDistribution(generator)) / (m_imageSize.x - 1);
-				float v = (static_cast<float>(pixelCoord.y) + m_unifDistribution(generator)) / (m_imageSize.y - 1);
+				float u = ((float)(pixelCoord.x) + m_unifDistribution(generator)) / (BM_Width - 1);
+				float v = ((float)(pixelCoord.y) + m_unifDistribution(generator)) / (BM_Height - 1);
 				Ray r = m_camera->NewRay(u, v);
 				pixel_color += ShootRay(r, maxRayDepth);
 			}
@@ -67,9 +75,7 @@ void Renderer::Render()
 			WritePixelToBuffer(pixelCoord.x, pixelCoord.y, samplesPerPixel, pixel_color);
 		}
 	}
-	MyImage.vertical_flip();
-	MyImage.horizontal_flip();
-	MyImage.save_image("Output.bmp");
+
 
 	const auto stopTime = std::chrono::system_clock::now();
 	auto renderDuration = stopTime - startTime;
@@ -122,8 +128,9 @@ void Renderer::WritePixelToBuffer(unsigned int ix, unsigned int iy, unsigned int
 	MyColor.green = FloatTo255(pixel_color.g);
 	MyColor.blue = FloatTo255(pixel_color.b);
 
-
+	mtx.lock();
 	MyImage.set_pixel(ix, iy, MyColor);
+	mtx.unlock();
 
 };
 
