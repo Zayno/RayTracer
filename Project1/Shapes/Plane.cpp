@@ -1,5 +1,4 @@
 #include <iostream>
-#include"../glm/glm.hpp"
 #include "Plane.h"
 
 

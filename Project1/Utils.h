@@ -1,9 +1,12 @@
 #pragma once
 
+#define GLM_FORCE_SIMD_AVX2
+
 #include "glm.hpp"
 #include <random>
 using namespace glm;
 
+#include "GCC_RNG.h"
 // Constants
 constexpr float infinity = std::numeric_limits<float>::infinity();
 constexpr float pi = 3.1415926535897932385f;
