@@ -152,9 +152,9 @@ void Renderer::LoadScene()
 
 		m_scene.Add(HittableObject(new Plane(point3(0, 0, 0), glm::vec3(0, 1, 0)), new Lambertian(color(0.5, 0.5, 0.5))));
 
-		for (int a = -11; a < 11; a++)
+		for (int a = -3; a < 3; a++)
 		{
-			for (int b = -11; b < 11; b++)
+			for (int b = -3; b < 3; b++)
 			{
 				const auto choose_mat = m_unifDistribution(m_rnGenerator);
 				point3 center(a + 0.9 * m_unifDistribution(m_rnGenerator), 0.2, b + 0.9 * m_unifDistribution(m_rnGenerator));
@@ -164,12 +164,12 @@ void Renderer::LoadScene()
 					if (choose_mat < 0.8f)
 					{
 						// diffuse
-// 						color randColor{ m_unifDistribution(m_rnGenerator), m_unifDistribution(m_rnGenerator),
-// 										m_unifDistribution(m_rnGenerator) };
-// 						auto albedo = randColor * randColor;
-// 						auto center2 = center + vec3(0, 0.5 * m_unifDistribution(m_rnGenerator), 0);
-// 						m_scene.Add(HittableObject(new MovingSphere(center, center2, 0.0f, 1.0f, 0.2f), new Lambertian(albedo)));
- 					}
+						color randColor{ m_unifDistribution(m_rnGenerator), m_unifDistribution(m_rnGenerator),
+										m_unifDistribution(m_rnGenerator) };
+						auto albedo = randColor * randColor;
+						auto center2 = center + vec3(0, 0.5 * m_unifDistribution(m_rnGenerator), 0);
+						m_scene.Add(HittableObject(new Sphere(center, 0.2f), new Lambertian(albedo)));
+					}
 					else if (choose_mat < 0.95f)
 					{
 						// metal
@@ -204,7 +204,7 @@ void Renderer::LoadScene()
 	// 
 	// 		m_camera = std::make_unique<Camera>(orientation, 20.0f, AspectRatio(), aperture, dist_to_focus);
 	// 
-	// 		auto R = std::cos(pi / 4);
+	// 		auto R = std::cos(MY_PI / 4);
 	// 		m_scene.Add(Sphere(point3(0.0, -100.5, -1.0), 100.0f), Lambertian(color(0.8, 0.8, 0.0)));
 	// 		m_scene.Add(Sphere(point3(0.0, 0.0, -1.0), 0.5f), Lambertian(color(0.1, 0.2, 0.5)));
 	// 		m_scene.Add(Sphere(point3(-1.0, 0.0, -1.0), 0.5f), Dielectric(1.5f));

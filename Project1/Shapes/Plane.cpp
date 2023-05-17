@@ -7,7 +7,7 @@ Plane::Plane(const point3& point, const float polar, const float azimuth)
 	: m_point(point), m_polar(polar), m_azimuth(azimuth) 
 {
 	m_normal = { std::sin(m_polar) * std::cos(m_azimuth), std::sin(m_polar) * std::sin(m_azimuth),
-				std::cos(pi - m_polar) };
+				std::cos(MY_PI - m_polar) };
 }
 
 Plane::Plane(const point3& point, const glm::vec3 normal)

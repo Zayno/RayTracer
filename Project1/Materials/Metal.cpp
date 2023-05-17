@@ -9,7 +9,8 @@ ScatteringRecord Metal::Scatter(const Ray& r_in, const HitRecord& rec)
 	ScatteringRecord empty_result{};
 	empty_result.IsValid = false;
 
-	vec3 new_direction = glm::reflect(r_in.direction, rec.normal) + m_fuzzyness * sphericalRand(1.0f);
+	//vec3 new_direction = glm::reflect(r_in.direction, rec.normal) + m_fuzzyness * sphericalRand(1.0f);
+	vec3 new_direction = glm::reflect(r_in.direction, rec.normal) + m_fuzzyness * GenerateRandomVectorInCone(rec.normal, 90.0f);
 
 	if (glm::dot(new_direction, rec.normal) > 0)
 	{

@@ -9,11 +9,11 @@ using namespace std;
 //set the following options to change output image
 
 //output image width and height
-int BM_Width = 1000;
-int BM_Height = 1000;
+int BM_Width = 6000;
+int BM_Height = BM_Width / (16.0f/9.0f);
 //ray tracer details settings
-unsigned int samplesPerPixel = 32;//64 is fairly nice
-unsigned int maxRayDepth = 8;//12 can be a default value
+unsigned int samplesPerPixel = 256;//64 is fairly nice
+unsigned int maxRayDepth = 64;//12 can be a default value
 
 mutex mtx;           // mutex for critical section
 
@@ -70,7 +70,7 @@ int main()
 
 	MyImage.vertical_flip();
 	MyImage.horizontal_flip();
-	MyImage.save_image("Output.bmp");
+	MyImage.save_image("ZZZOutput.bmp");
 
 
 }

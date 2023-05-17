@@ -94,9 +94,10 @@ public:
 // NEW for Game Code Complete 3rd Edition!
 	float Random()
 	{
-		int r = (float)Random(0xffffffff);
-		float divisor = (float)0xffffffff;
-		return (r / divisor) + 0.5f;
+		int r = Random((unsigned int)0xFFFF);
+		double divisor = (double)0xFFFF;
+		double res = r / divisor;
+		return (float)res;
 	}
 
 	void SetRandomSeed(unsigned int n)
@@ -123,6 +124,27 @@ public:
 
 		SetRandomSeed(seed);
 	}
+
+	float Random(float n)
+	{
+		float result = 0;
+
+		double temp = (double)n;
+
+		temp *= 1000.0;
+		unsigned int RandVal = Random((unsigned int)temp + 1);
+		temp = RandVal;
+		temp /= 1000.0;
+
+		result = (float)temp;
+
+		if (result > n)
+			result = n;
+
+		return result;
+	}
+
+
 };
 
 

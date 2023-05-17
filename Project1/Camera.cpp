@@ -25,10 +25,10 @@ Camera::Camera(CameraOrientation orientation, float verticalFov, float aspectRat
 
 Ray Camera::NewRay(float s, float t) const
 {
-	vec2 randVec = MyDiskRand(m_lensRadius);
+	//vec2 randVec = MyDiskRand(m_lensRadius);
 
-	vec3 offset = u * randVec.x + v * randVec.y;
+	//vec3 offset = u * randVec.x + v * randVec.y;
 	float ray_time = 0;// MyUniformRand(m_shutterOpen, m_shutterClose);
 
-	return Ray(m_origin + offset, m_lowerLeftCorner + s * m_horizontal + t * m_vertical - m_origin - offset);
+	return Ray(m_origin, m_lowerLeftCorner + s * m_horizontal + t * m_vertical - m_origin);
 }
