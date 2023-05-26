@@ -12,7 +12,7 @@ using namespace std;
 int BM_Width = 6000;
 int BM_Height = BM_Width / (16.0f/9.0f);
 //ray tracer details settings
-unsigned int samplesPerPixel = 256;//64 is fairly nice
+unsigned int samplesPerPixel = 128;//64 is fairly nice
 unsigned int maxRayDepth = 64;//12 can be a default value
 
 mutex mtx;           // mutex for critical section

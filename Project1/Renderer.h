@@ -35,6 +35,7 @@ private:
 
 	int m_StartPos = 0;
 	int m_EndPos = 0;
+	CRandom MyRandom;
 
 	Scenes m_sceneType{ Scenes::DefaultScene };
 	HittableObjectList m_scene;

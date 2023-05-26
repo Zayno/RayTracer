@@ -66,8 +66,8 @@ void Renderer::Render()
 
 			for (unsigned int i = 0; i < samplesPerPixel; i++)
 			{
-				float u = ((float)(pixelCoord.x) + m_unifDistribution(generator)) / (BM_Width - 1);
-				float v = ((float)(pixelCoord.y) + m_unifDistribution(generator)) / (BM_Height - 1);
+				float u = ((float)(pixelCoord.x) + MyRandom.Random()) / (BM_Width - 1);
+				float v = ((float)(pixelCoord.y) + MyRandom.Random()) / (BM_Height - 1);
 				Ray r = m_camera->NewRay(u, v);
 				pixel_color += ShootRay(r, maxRayDepth);
 			}
