@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="bitmap_image.hpp" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="GCC_RNG.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="HittableObject.h" />
     <ClInclude Include="HittableObjectList.h" />

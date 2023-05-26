@@ -113,5 +113,8 @@
     <ClInclude Include="bitmap_image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GCC_RNG.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

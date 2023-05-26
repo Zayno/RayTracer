@@ -1,4 +1,6 @@
 #include<chrono>
+#include <mutex>
+
 #include "Renderer.h"
 
 #include "Shapes/Shapes.h"
@@ -20,46 +22,52 @@ extern color azure;
 
 extern unsigned int samplesPerPixel;
 extern unsigned int maxRayDepth;
+extern int BM_Width;
+extern int BM_Height;
 
+extern std::mutex mtx;
 
 Renderer::~Renderer()
 {
 
 }
 
-void Renderer::SetImageSize(unsigned int x, unsigned int y)
+void Renderer::StartRender(int Start, int End)
 {
-	m_imageSize = glm::uvec2{ x, y };
-
-}
-
-void Renderer::StartRender()
-{
+	m_StartPos = Start;
+	m_EndPos = End;
 
 	LoadScene();
 	Render();
 }
 
+std::mt19937 g_rnGenerator{};
+std::uniform_real_distribution<float> g_unifDistribution{ 0.0f, 1.0f };
+
+void HandlePixel(int _i, int _j)
+{
+
+}
 
 void Renderer::Render()
 {
-	std::cout << ("Start rendering!!!") << std::endl;
 	const auto startTime = std::chrono::system_clock::now();
 
 	std::mt19937 generator{ std::random_device{}() };
 
-	for (int i = 0; i < m_imageSize.x; i++)
+	for (int i = m_StartPos; i <= m_EndPos; i++)
 	{
-		std::cout << i << " / " << m_imageSize.x << std::endl;
+		//std::cout << i << " / " << BM_Width << std::endl;
 
-		for (int j = 0; j < m_imageSize.y; j++)
+		for (int j = 0; j < BM_Height; j++)
 		{
 			color pixel_color{ 0, 0, 0 };
 			glm::uvec2 pixelCoord = glm::uvec2{ i, j };
-			for (unsigned int i_sample = 0; i_sample < samplesPerPixel; i_sample++)
+
+			for (unsigned int i = 0; i < samplesPerPixel; i++)
 			{
-				float u = (static_cast<float>(pixelCoord.x) + m_unifDistribution(generator)) / (m_imageSize.x - 1);
-				float v = (static_cast<float>(pixelCoord.y) + m_unifDistribution(generator)) / (m_imageSize.y - 1);
+				float u = ((float)(pixelCoord.x) + MyRandom.Random()) / (BM_Width - 1);
+				float v = ((float)(pixelCoord.y) + MyRandom.Random()) / (BM_Height - 1);
 				Ray r = m_camera->NewRay(u, v);
 				pixel_color += ShootRay(r, maxRayDepth);
 			}
@@ -67,9 +75,7 @@ void Renderer::Render()
 			WritePixelToBuffer(pixelCoord.x, pixelCoord.y, samplesPerPixel, pixel_color);
 		}
 	}
-	MyImage.vertical_flip();
-	MyImage.horizontal_flip();
-	MyImage.save_image("Output.bmp");
+
 
 	const auto stopTime = std::chrono::system_clock::now();
 	auto renderDuration = stopTime - startTime;
@@ -122,8 +128,9 @@ void Renderer::WritePixelToBuffer(unsigned int ix, unsigned int iy, unsigned int
 	MyColor.green = FloatTo255(pixel_color.g);
 	MyColor.blue = FloatTo255(pixel_color.b);
 
-
+	mtx.lock();
 	MyImage.set_pixel(ix, iy, MyColor);
+	mtx.unlock();
 
 };
 
@@ -145,9 +152,9 @@ void Renderer::LoadScene()
 
 		m_scene.Add(HittableObject(new Plane(point3(0, 0, 0), glm::vec3(0, 1, 0)), new Lambertian(color(0.5, 0.5, 0.5))));
 
-		for (int a = -11; a < 11; a++)
+		for (int a = -3; a < 3; a++)
 		{
-			for (int b = -11; b < 11; b++)
+			for (int b = -3; b < 3; b++)
 			{
 				const auto choose_mat = m_unifDistribution(m_rnGenerator);
 				point3 center(a + 0.9 * m_unifDistribution(m_rnGenerator), 0.2, b + 0.9 * m_unifDistribution(m_rnGenerator));
@@ -157,12 +164,12 @@ void Renderer::LoadScene()
 					if (choose_mat < 0.8f)
 					{
 						// diffuse
-// 						color randColor{ m_unifDistribution(m_rnGenerator), m_unifDistribution(m_rnGenerator),
-// 										m_unifDistribution(m_rnGenerator) };
-// 						auto albedo = randColor * randColor;
-// 						auto center2 = center + vec3(0, 0.5 * m_unifDistribution(m_rnGenerator), 0);
-// 						m_scene.Add(HittableObject(new MovingSphere(center, center2, 0.0f, 1.0f, 0.2f), new Lambertian(albedo)));
- 					}
+						color randColor{ m_unifDistribution(m_rnGenerator), m_unifDistribution(m_rnGenerator),
+										m_unifDistribution(m_rnGenerator) };
+						auto albedo = randColor * randColor;
+						auto center2 = center + vec3(0, 0.5 * m_unifDistribution(m_rnGenerator), 0);
+						m_scene.Add(HittableObject(new Sphere(center, 0.2f), new Lambertian(albedo)));
+					}
 					else if (choose_mat < 0.95f)
 					{
 						// metal
@@ -197,7 +204,7 @@ void Renderer::LoadScene()
 	// 
 	// 		m_camera = std::make_unique<Camera>(orientation, 20.0f, AspectRatio(), aperture, dist_to_focus);
 	// 
-	// 		auto R = std::cos(pi / 4);
+	// 		auto R = std::cos(MY_PI / 4);
 	// 		m_scene.Add(Sphere(point3(0.0, -100.5, -1.0), 100.0f), Lambertian(color(0.8, 0.8, 0.0)));
 	// 		m_scene.Add(Sphere(point3(0.0, 0.0, -1.0), 0.5f), Lambertian(color(0.1, 0.2, 0.5)));
 	// 		m_scene.Add(Sphere(point3(-1.0, 0.0, -1.0), 0.5f), Dielectric(1.5f));
